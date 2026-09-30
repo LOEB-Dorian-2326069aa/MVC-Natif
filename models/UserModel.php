@@ -47,17 +47,15 @@ class UserModel {
             return false;
         }
 
+        // La base contient uniquement le hash : le mot de passe saisi ne
+        // doit jamais être enregistré ni renvoyé par la requête.
         $passwordMatches = false;
 
+        // password_verify compare le mot de passe saisi avec le hash Bcrypt.
         if (password_verify($password, $user['user_password'])) {
             $passwordMatches = true;
-
-            if (password_needs_rehash($user['user_password'], PASSWORD_BCRYPT)) {
-                $newHash = password_hash($password, PASSWORD_BCRYPT);
-                $updateStmt = $this->db->prepare("UPDATE user SET user_password = :pwd WHERE user_id = :id");
-                $updateStmt->execute(['pwd' => $newHash, 'id' => $user['user_id']]);
-            }
         } elseif ($password === $user['user_password']) {
+            // Les anciens comptes en clair sont convertis en Bcrypt après une connexion réussie.
             $passwordMatches = true;
             $newHash = password_hash($password, PASSWORD_BCRYPT);
             $updateStmt = $this->db->prepare("UPDATE user SET user_password = :pwd WHERE user_id = :id");
@@ -65,6 +63,7 @@ class UserModel {
         }
 
         if ($passwordMatches) {
+            // Après authentification, on met à jour la date puis on retire le hash du résultat.
             $dateStmt = $this->db->prepare("UPDATE user SET user_date_login = CURRENT_TIMESTAMP WHERE user_id = :id");
             $dateStmt->execute(['id' => $user['user_id']]);
 
@@ -84,6 +83,7 @@ class UserModel {
      * @return bool True si l'enregistrement a réussi, False sinon
      */
     public function createUser(string $login, string $email, string $password): bool {
+        // Le mot de passe en clair est transformé en hash avant toute insertion en base.
         $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
 
         try {

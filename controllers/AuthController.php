@@ -109,7 +109,7 @@ class AuthController {
 
         require __DIR__ . '/../views/register.php';
     }
-
+    // Gestion du jeton CSRF pour la sécurité des formulaires
     private function getCsrfToken(): string {
         if (empty($_SESSION['csrf_token'])) {
             $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
@@ -118,6 +118,7 @@ class AuthController {
         return $_SESSION['csrf_token'];
     }
 
+    // Validation du jeton CSRF pour les requêtes POST
     private function isCsrfTokenValid(): bool {
         $submittedToken = $_POST['csrf_token'] ?? '';
         $sessionToken = $_SESSION['csrf_token'] ?? '';

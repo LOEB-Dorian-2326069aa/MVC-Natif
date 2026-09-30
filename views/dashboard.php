@@ -29,12 +29,6 @@
         <section class="auth-container" style="max-width: 600px;">
             <article class="card">
                 <h1 class="page-title">Tableau de bord</h1>
-                <p class="page-subtitle">Authentification réussie via mot de passe haché Bcrypt</p>
-
-                <div class="alert alert-success" role="status">
-                    <span>Vous êtes connecté avec succès à votre session sécurisée.</span>
-                </div>
-
                 <div class="dashboard-grid">
                     <div class="info-item">
                         <div class="info-label">Identifiant Utilisateur (ID)</div>
