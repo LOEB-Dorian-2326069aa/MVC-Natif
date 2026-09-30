@@ -24,8 +24,6 @@
             </nav>
         </div>
     </header>
-
-    <main class="main-wrapper" role="main">
         <section class="auth-container">
             <article class="card">
                 <h1 class="page-title">Connexion</h1>
@@ -44,8 +42,6 @@
                 <?php endif; ?>
 
                 <form method="POST" action="index.php?action=login" class="form-auth">
-                    <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrfToken, ENT_QUOTES, 'UTF-8') ?>">
-
                     <div class="form-group">
                         <label for="login" class="form-label">Identifiant ou Email :</label>
                         <input 

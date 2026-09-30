@@ -30,26 +30,19 @@ MVC-Natif/
 
 ---
 
-## Sécurité & Robustesse
+## Sécurité de base
 
-Conformément aux exigences pédagogiques et au référentiel OWASP :
+Les protections essentielles du projet sont les suivantes :
 
 1. **Hachage des mots de passe avec Bcrypt & Salage automatique** :
    - Inscription : `password_hash($password, PASSWORD_BCRYPT)`
    - Connexion : `password_verify($password, $user['user_password'])`
-   - Rehash automatique si nécessaire via `password_needs_rehash()`.
 2. **Requêtes Préparées Systématiques (PDO)** :
    - Éradication totale des injections SQL.
    - Désactivation de l'émulation des requêtes préparées (`PDO::ATTR_EMULATE_PREPARES => false`).
-3. **Protection CSRF (Cross-Site Request Forgery)** :
-   - Génération d'un jeton aléatoire fort cryptographique (`random_bytes(32)`) stocké en session.
-   - Contrôle du token via `hash_equals()` sur chaque requête `POST`.
-4. **Protection XSS (Cross-Site Scripting)** :
+3. **Protection XSS (Cross-Site Scripting)** :
    - Échappement rigoureux de toutes les données dynamiques injectées dans les vues via `htmlspecialchars(..., ENT_QUOTES, 'UTF-8')`.
-5. **Sécurisation des Sessions** :
-   - Cookies HTTP-Only (`cookie_httponly => true`) et politique `SameSite=Lax`.
-   - Régénération systématique de l'ID de session après authentification réussie (`session_regenerate_id(true)`) pour contrer les attaques par fixation de session.
-6. **Validation Miroir (Client-Side & Server-Side)** :
+4. **Validation des formulaires** :
    - Règle Regex stricte pour les mots de passe : `(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}` (8 caractères minimum, 1 majuscule, 1 minuscule, 1 chiffre).
    - Validation stricte du format email côté serveur via `filter_var(..., FILTER_VALIDATE_EMAIL)`.
    - Vérification d'unicité en base de données pour le pseudo et l'adresse email.

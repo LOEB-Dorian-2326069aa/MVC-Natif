@@ -47,31 +47,16 @@ class UserModel {
             return false;
         }
 
-        // La base contient uniquement le hash : le mot de passe saisi ne
-        // doit jamais être enregistré ni renvoyé par la requête.
-        $passwordMatches = false;
-
         // password_verify compare le mot de passe saisi avec le hash Bcrypt.
-        if (password_verify($password, $user['user_password'])) {
-            $passwordMatches = true;
-        } elseif ($password === $user['user_password']) {
-            // Les anciens comptes en clair sont convertis en Bcrypt après une connexion réussie.
-            $passwordMatches = true;
-            $newHash = password_hash($password, PASSWORD_BCRYPT);
-            $updateStmt = $this->db->prepare("UPDATE user SET user_password = :pwd WHERE user_id = :id");
-            $updateStmt->execute(['pwd' => $newHash, 'id' => $user['user_id']]);
+        if (!password_verify($password, $user['user_password'])) {
+            return false;
         }
 
-        if ($passwordMatches) {
-            // Après authentification, on met à jour la date puis on retire le hash du résultat.
-            $dateStmt = $this->db->prepare("UPDATE user SET user_date_login = CURRENT_TIMESTAMP WHERE user_id = :id");
-            $dateStmt->execute(['id' => $user['user_id']]);
+        $dateStmt = $this->db->prepare("UPDATE user SET user_date_login = CURRENT_TIMESTAMP WHERE user_id = :id");
+        $dateStmt->execute(['id' => $user['user_id']]);
 
-            unset($user['user_password']);
-            return $user;
-        }
-
-        return false;
+        unset($user['user_password']);
+        return $user;
     }
 
     /**
@@ -86,46 +71,20 @@ class UserModel {
         // Le mot de passe en clair est transformé en hash avant toute insertion en base.
         $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
 
-        try {
-            $this->db->beginTransaction();
+        $compteStmt = $this->db->query("SELECT COALESCE(MAX(user_compte_id), 0) + 1 FROM user");
+        $nextCompteId = (int)$compteStmt->fetchColumn();
 
-            $compteStmt = $this->db->query("SELECT user_compte_id FROM user ORDER BY user_compte_id DESC LIMIT 1 FOR UPDATE");
-            $lastCompteId = $compteStmt->fetchColumn();
-            $nextCompteId = ($lastCompteId === false ? 0 : (int)$lastCompteId) + 1;
+        $stmt = $this->db->prepare("
+            INSERT INTO user (user_login, user_mail, user_password, user_compte_id) 
+            VALUES (:login, :email, :password, :compte_id)
+        ");
 
-            $stmt = $this->db->prepare("
-                INSERT INTO user (user_login, user_mail, user_password, user_compte_id) 
-                VALUES (:login, :email, :password, :compte_id)
-            ");
-
-            $created = $stmt->execute([
-                'login'     => $login,
-                'email'     => $email,
-                'password'  => $hashedPassword,
-                'compte_id' => $nextCompteId
-            ]);
-
-            $this->db->commit();
-            return $created;
-        } catch (PDOException $e) {
-            if ($this->db->inTransaction()) {
-                $this->db->rollBack();
-            }
-
-            return false;
-        }
-    }
-
-    /**
-     * Vérifie si un identifiant (login) est déjà utilisé
-     *
-     * @param string $login
-     * @return bool
-     */
-    public function isLoginTaken(string $login): bool {
-        $stmt = $this->db->prepare("SELECT COUNT(*) FROM user WHERE user_login = :login");
-        $stmt->execute(['login' => $login]);
-        return (int)$stmt->fetchColumn() > 0;
+        return $stmt->execute([
+            'login'     => $login,
+            'email'     => $email,
+            'password'  => $hashedPassword,
+            'compte_id' => $nextCompteId
+        ]);
     }
 
     /**
