@@ -24,6 +24,8 @@
             </nav>
         </div>
     </header>
+
+    <main class="main-wrapper" role="main">
         <section class="auth-container">
             <article class="card">
                 <h1 class="page-title">Connexion</h1>
