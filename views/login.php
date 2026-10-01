@@ -61,16 +61,21 @@
 
                     <div class="form-group">
                         <label for="password" class="form-label">Mot de passe :</label>
-                        <input 
-                            type="password" 
-                            id="password" 
-                            name="password" 
-                            class="form-input" 
-                            required 
-                            autocomplete="current-password" 
-                            placeholder="••••••••"
-                            aria-required="true"
-                        >
+                        <div class="password-field">
+                            <input 
+                                type="password" 
+                                id="password" 
+                                name="password" 
+                                class="form-input" 
+                                required 
+                                autocomplete="current-password" 
+                                placeholder="••••••••"
+                                aria-required="true"
+                            >
+                            <button type="button" class="password-toggle" data-password-toggle aria-controls="password" aria-label="Afficher le mot de passe" title="Afficher le mot de passe">
+                                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                            </button>
+                        </div>
                     </div>
 
                     <button type="submit" class="btn btn-primary">Se connecter</button>
@@ -86,5 +91,6 @@
     <footer class="site-footer" role="contentinfo">
         <p>&copy; 2026 Projet Fil Rouge MVC Natif - Programmation Web M1</p>
     </footer>
+    <script src="assets/js/password-toggle.js"></script>
 </body>
 </html>

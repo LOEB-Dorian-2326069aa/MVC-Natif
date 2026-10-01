@@ -82,19 +82,24 @@
 
                     <div class="form-group">
                         <label for="password" class="form-label">Mot de passe :</label>
-                        <input 
-                            type="password" 
-                            id="password" 
-                            name="password" 
-                            class="form-input" 
-                            required 
-                            pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"
-                            title="Le mot de passe doit comporter au moins 8 caractères, une majuscule, une minuscule et un chiffre." 
-                            autocomplete="new-password" 
-                            placeholder="••••••••"
-                            aria-required="true"
-                            aria-describedby="pwd-help"
-                        >
+                        <div class="password-field">
+                            <input 
+                                type="password" 
+                                id="password" 
+                                name="password" 
+                                class="form-input" 
+                                required 
+                                pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"
+                                title="Le mot de passe doit comporter au moins 8 caractères, une majuscule, une minuscule et un chiffre." 
+                                autocomplete="new-password" 
+                                placeholder="••••••••"
+                                aria-required="true"
+                                aria-describedby="pwd-help"
+                            >
+                            <button type="button" class="password-toggle" data-password-toggle aria-controls="password" aria-label="Afficher le mot de passe" title="Afficher le mot de passe">
+                                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                            </button>
+                        </div>
                         <span id="pwd-help" class="form-help">
                             Sécurité requise : 8 caractères minimum, au moins 1 majuscule, 1 minuscule et 1 chiffre.
                         </span>
@@ -113,5 +118,6 @@
     <footer class="site-footer" role="contentinfo">
         <p>&copy; 2026 Projet Fil Rouge MVC Natif - Programmation Web M1</p>
     </footer>
+    <script src="assets/js/password-toggle.js"></script>
 </body>
 </html>

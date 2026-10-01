@@ -202,6 +202,49 @@ body {
     box-shadow: 0 0 0 3px var(--primary-focus);
 }
 
+.password-field {
+    position: relative;
+}
+
+.password-field .form-input {
+    padding-right: 3rem;
+}
+
+.password-toggle {
+    position: absolute;
+    top: 50%;
+    right: 0.75rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2rem;
+    height: 2rem;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    color: var(--text-muted);
+    background: transparent;
+    cursor: pointer;
+    transform: translateY(-50%);
+}
+
+.password-toggle:hover,
+.password-toggle:focus-visible {
+    color: var(--primary-color);
+    background-color: rgba(26, 86, 219, 0.08);
+    outline: none;
+}
+
+.password-toggle svg {
+    width: 1.15rem;
+    height: 1.15rem;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
 /* Aide sous les champs */
 .form-help {
     font-size: 0.82rem;
