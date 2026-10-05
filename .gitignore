@@ -1,1 +1,7 @@
 .env
+
+# Dépendances installées par Composer (recréées avec composer install)
+/vendor/
+
+# Images uploadées générées localement
+/assets/images/product-*

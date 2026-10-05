@@ -62,6 +62,8 @@
                 </div>
 
                 <div style="margin-top: 2rem;">
+                    <a href="index.php?action=users" class="btn btn-primary">Gérer les utilisateurs</a>
+                    <a href="index.php?action=products" class="btn btn-primary">Gérer les produits</a>
                     <a href="index.php?action=logout" class="btn btn-danger">Se déconnecter</a>
                 </div>
             </article>

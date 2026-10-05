@@ -15,13 +15,15 @@ MVC-Natif/
 ├── config/
 │   └── db.php                  # Singleton PDO (Connexion BDD centralisée)
 ├── controllers/
-│   └── AuthController.php      # Gestion de la logique applicative et de session
+│   ├── AuthController.php      # Gestion de la logique applicative et de session
+│   └── UserController.php      # CRUD des utilisateurs authentifiés
 ├── models/
 │   └── UserModel.php           # Abstraction et persistance des données (table `user`)
 ├── views/
 │   ├── login.php               # Vue formulaire de connexion
 │   ├── register.php            # Vue formulaire d'inscription
-│   └── dashboard.php           # Vue de l'espace membre sécurisé
+│   ├── dashboard.php           # Vue de l'espace membre sécurisé
+│   └── users/                  # Liste et formulaires du CRUD utilisateur
 ├── database.sql                # Script de création du schéma SQL
 ├── .env.example                # Modèle de configuration locale
 ├── index.php                   # Front Controller (Point d'entrée unique)
@@ -46,6 +48,25 @@ Les protections essentielles du projet sont les suivantes :
    - Règle Regex stricte pour les mots de passe : `(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}` (8 caractères minimum, 1 majuscule, 1 minuscule, 1 chiffre).
    - Validation stricte du format email côté serveur via `filter_var(..., FILTER_VALIDATE_EMAIL)`.
    - Vérification d'unicité en base de données pour le pseudo et l'adresse email.
+
+## CRUD utilisateur et produit
+
+Après connexion, le tableau de bord donne accès à la gestion des utilisateurs :
+
+- **Create** : créer un utilisateur avec pseudo, email et mot de passe ;
+- **Read** : consulter la liste des utilisateurs sans exposer les mots de passe ;
+- **Update** : modifier le pseudo, l'email et, facultativement, le mot de passe ;
+- **Delete** : supprimer un utilisateur, sauf son propre compte.
+
+Les routes sont disponibles via le front controller avec les actions
+`users`, `user-create`, `user-edit` et `user-delete`.
+
+Le catalogue produit dispose également des routes `products`, `product-create`,
+`product-edit` et `product-delete`. La table `produit` suit le schéma du sujet
+avec les colonnes `id_p`, `type_p`, `designation_p`, `prix_ht`, `date_in`,
+`times_in`, `stock_p`, `ppromo`, `image_blob` et `image_mime`. Les images sont
+enregistrées directement dans la base de données au format binaire, puis
+servies par la route `product-image`.
 
 ---
 
@@ -85,4 +106,21 @@ Les variables utilisées sont `DB_HOST`, `DB_PORT`, `DB_NAME`, `DB_USER` et `DB_
 ```bash
 php -S localhost:8000
 ```
+
+### 4. Générer des produits de test
+
+Installez Faker avec Composer :
+
+```bash
+composer require fakerphp/faker
+```
+
+Puis lancez le seeder depuis la racine du projet :
+
+```bash
+php scripts/seed_products.php
+```
+
+Le script insère 500 produits dans une transaction et utilise les catégories
+définies dans `categories.json`.
 Puis ouvrez votre navigateur sur [http://localhost:8000/index.php](http://localhost:8000/index.php).

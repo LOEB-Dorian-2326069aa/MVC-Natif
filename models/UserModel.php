@@ -116,4 +116,81 @@ class UserModel {
         $user = $stmt->fetch();
         return $user ?: null;
     }
+
+    /**
+     * Récupère tous les utilisateurs sans exposer leur mot de passe.
+     *
+     * @return array<int, array<string, mixed>>
+     */
+    public function findAll(): array {
+        $stmt = $this->db->query("
+            SELECT user_id, user_login, user_compte_id, user_mail, user_date_new, user_date_login
+            FROM user
+            ORDER BY user_id DESC
+        ");
+
+        return $stmt->fetchAll();
+    }
+
+    /**
+     * Vérifie si un pseudo est déjà utilisé par un autre utilisateur.
+     */
+    public function isLoginTaken(string $login, ?int $exceptUserId = null): bool {
+        $sql = "SELECT COUNT(*) FROM user WHERE user_login = :login";
+        $params = ['login' => $login];
+
+        if ($exceptUserId !== null) {
+            $sql .= " AND user_id <> :user_id";
+            $params['user_id'] = $exceptUserId;
+        }
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute($params);
+        return (int)$stmt->fetchColumn() > 0;
+    }
+
+    /**
+     * Vérifie si une adresse email est déjà utilisée par un autre utilisateur.
+     */
+    public function isEmailTakenByOther(string $email, int $userId): bool {
+        $stmt = $this->db->prepare(
+            "SELECT COUNT(*) FROM user WHERE user_mail = :email AND user_id <> :user_id"
+        );
+        $stmt->execute(['email' => $email, 'user_id' => $userId]);
+        return (int)$stmt->fetchColumn() > 0;
+    }
+
+    /**
+     * Met à jour les informations publiques d'un utilisateur.
+     */
+    public function updateUser(int $userId, string $login, string $email, ?string $password = null): bool {
+        if ($password !== null && $password !== '') {
+            $stmt = $this->db->prepare("
+                UPDATE user
+                SET user_login = :login, user_mail = :email, user_password = :password
+                WHERE user_id = :id
+            ");
+            return $stmt->execute([
+                'login' => $login,
+                'email' => $email,
+                'password' => password_hash($password, PASSWORD_BCRYPT),
+                'id' => $userId,
+            ]);
+        }
+
+        $stmt = $this->db->prepare("
+            UPDATE user
+            SET user_login = :login, user_mail = :email
+            WHERE user_id = :id
+        ");
+        return $stmt->execute(['login' => $login, 'email' => $email, 'id' => $userId]);
+    }
+
+    /**
+     * Supprime un utilisateur.
+     */
+    public function deleteUser(int $userId): bool {
+        $stmt = $this->db->prepare("DELETE FROM user WHERE user_id = :id");
+        return $stmt->execute(['id' => $userId]);
+    }
 }
