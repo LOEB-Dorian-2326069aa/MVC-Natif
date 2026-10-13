@@ -87,13 +87,40 @@ servies par la route `product-image`.
 
 ## Configuration & Installation
 
-### 1. Base de données
+### 1. Lancement avec Docker
+
+Docker est la méthode recommandée pour transmettre le projet à une autre équipe.
+Depuis la racine du projet, lancez :
+
+```bash
+docker compose up --build
+```
+
+Puis ouvrez [http://localhost:8000](http://localhost:8000).
+
+Les conteneurs contiennent l'application PHP/Apache et MySQL. Le fichier
+`database.sql` est exécuté automatiquement lors de la première création de la base.
+
+Pour arrêter les conteneurs :
+
+```bash
+docker compose down
+```
+
+Pour supprimer aussi les données MySQL et repartir de zéro :
+
+```bash
+docker compose down -v
+docker compose up --build
+```
+
+### 2. Base de données
 Importez le fichier `database.sql` dans votre serveur MySQL / MariaDB (ex: phpMyAdmin, DBeaver ou CLI MySQL) :
 ```sql
 mysql -u root -p < database.sql
 ```
 
-### 2. Configuration des accès BDD
+### 3. Configuration des accès BDD
 Copiez `.env.example` vers `.env`, puis renseignez les accès à votre serveur MySQL :
 ```bash
 copy .env.example .env
@@ -101,13 +128,13 @@ copy .env.example .env
 
 Les variables utilisées sont `DB_HOST`, `DB_PORT`, `DB_NAME`, `DB_USER` et `DB_PASS`. Le fichier `.env` est exclu de Git afin de ne pas publier les identifiants.
 
-### 3. Lancement du serveur de test PHP
+### 4. Lancement du serveur de test PHP
 À la racine du dossier `MVC-Natif` :
 ```bash
 php -S localhost:8000
 ```
 
-### 4. Générer des produits de test
+### 5. Générer des produits de test
 
 Installez Faker avec Composer :
 
