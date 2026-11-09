@@ -158,3 +158,45 @@ Dans **Gestion des produits**, sélectionnez un type dans le filtre puis cliquez
 sur **Filtrer**. Le filtrage est effectué côté serveur avec une requête SQL
 préparée et reste actif lorsque vous changez de page. Le bouton
 **Réinitialiser** affiche à nouveau tous les produits.
+
+### 7. Tests Selenium
+
+Le script `test_inscription.py` automatise un parcours dans Chrome avec Selenium.
+Il vérifie :
+
+- la création d'un compte et l'affichage du message de confirmation ;
+- la connexion avec ce compte et l'affichage du tableau de bord ;
+- la création de deux produits de types différents ;
+- le filtrage par type, la conservation du type sélectionné et la réinitialisation du filtre ;
+- la suppression des produits créés par le test, puis la déconnexion.
+
+#### Prérequis et lancement
+
+Lancez d'abord l'application et sa base de données avec Docker, puis laissez les
+conteneurs actifs :
+
+```powershell
+docker compose up --build
+```
+
+Dans un autre terminal PowerShell, depuis la racine du projet, installez Selenium
+(une seule fois) et lancez le test :
+
+```powershell
+python -m pip install selenium
+python test_inscription.py
+```
+
+Chrome doit être installé. Selenium Manager essaie de récupérer automatiquement
+le pilote correspondant. Le site doit être accessible à `http://localhost:8000`.
+Pour utiliser une autre adresse, définissez `APP_URL` avant de lancer le script :
+
+```powershell
+$env:APP_URL = "http://localhost:8000"
+python test_inscription.py
+```
+
+Le script crée un compte unique qui reste dans la base après le test ; les deux
+produits de test sont supprimés. En cas d'échec, il affiche l'étape concernée et
+enregistre une capture d'écran ainsi que le HTML de la page dans
+`selenium-results/`, à la racine du projet.
