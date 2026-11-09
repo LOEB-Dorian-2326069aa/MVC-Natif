@@ -7,8 +7,8 @@ $escape = static fn (mixed $value): string => htmlspecialchars((string)$value, E
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Utilisateurs | Portail MVC Natif</title>
-    <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
-    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="icon" type="image/svg+xml" href="../../assets/favicon.svg">
+    <link rel="stylesheet" href="../../assets/css/style.css">
 </head>
 <body>
     <header class="site-header" role="banner">

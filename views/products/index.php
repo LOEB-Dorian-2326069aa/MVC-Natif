@@ -25,6 +25,22 @@ $escape = static fn (mixed $value): string => htmlspecialchars((string)$value, E
         </div><a href="index.php?action=product-create" class="btn btn-primary btn-auto">Nouveau produit</a></div>
         <?php if ($success !== ''): ?><div class="alert alert-success" role="status"><?= $escape($success) ?></div><?php endif; ?>
         <?php if ($error !== ''): ?><div class="alert alert-error" role="alert"><?= $escape($error) ?></div><?php endif; ?>
+        <form method="GET" action="index.php" class="product-filter">
+            <input type="hidden" name="action" value="products">
+            <label for="type-filter">Filtrer par type de produit</label>
+            <select id="type-filter" name="type">
+                <option value="">Tous les types</option>
+                <?php foreach ($productTypes as $productType): ?>
+                    <option value="<?= $escape($productType) ?>"<?= $selectedType === $productType ? ' selected' : '' ?>>
+                        <?= $escape($productType) ?>
+                    </option>
+                <?php endforeach; ?>
+            </select>
+            <button type="submit" class="btn btn-secondary btn-auto">Filtrer</button>
+            <?php if ($selectedType !== null): ?>
+                <a href="index.php?action=products" class="btn btn-small">Réinitialiser</a>
+            <?php endif; ?>
+        </form>
         <div class="table-wrapper"><table class="data-table">
             <caption class="sr-only">Liste des produits</caption>
             <thead><tr><th>ID</th><th>Image</th><th>Type</th><th>Désignation</th><th>Prix HT</th><th>Date d’entrée</th><th>Stock</th><th>Actions</th></tr></thead>
@@ -59,7 +75,7 @@ $escape = static fn (mixed $value): string => htmlspecialchars((string)$value, E
             <ul class="pagination">
                 <li>
                     <?php if ($currentPage > 1): ?>
-                        <a href="index.php?action=products&amp;page=<?= $currentPage - 1 ?>" aria-label="Page précédente">Précédent</a>
+                        <a href="index.php?action=products&amp;type=<?= urlencode($selectedType ?? '') ?>&amp;page=<?= $currentPage - 1 ?>" aria-label="Page précédente">Précédent</a>
                     <?php else: ?>
                         <span class="disabled" aria-disabled="true">Précédent</span>
                     <?php endif; ?>
@@ -69,13 +85,13 @@ $escape = static fn (mixed $value): string => htmlspecialchars((string)$value, E
                         <?php if ($page === $currentPage): ?>
                             <span class="active" aria-current="page"><?= $page ?></span>
                         <?php else: ?>
-                            <a href="index.php?action=products&amp;page=<?= $page ?>"><?= $page ?></a>
+                            <a href="index.php?action=products&amp;type=<?= urlencode($selectedType ?? '') ?>&amp;page=<?= $page ?>"><?= $page ?></a>
                         <?php endif; ?>
                     </li>
                 <?php endfor; ?>
                 <li>
                     <?php if ($currentPage < $totalPages): ?>
-                        <a href="index.php?action=products&amp;page=<?= $currentPage + 1 ?>" aria-label="Page suivante">Suivant</a>
+                        <a href="index.php?action=products&amp;type=<?= urlencode($selectedType ?? '') ?>&amp;page=<?= $currentPage + 1 ?>" aria-label="Page suivante">Suivant</a>
                     <?php else: ?>
                         <span class="disabled" aria-disabled="true">Suivant</span>
                     <?php endif; ?>

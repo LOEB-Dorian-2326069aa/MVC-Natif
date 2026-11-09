@@ -151,3 +151,10 @@ php scripts/seed_products.php
 Le script insère 500 produits dans une transaction et utilise les catégories
 définies dans `categories.json`.
 Puis ouvrez votre navigateur sur [http://localhost:8000/index.php](http://localhost:8000/index.php).
+
+### 6. Filtrer les produits par type
+
+Dans **Gestion des produits**, sélectionnez un type dans le filtre puis cliquez
+sur **Filtrer**. Le filtrage est effectué côté serveur avec une requête SQL
+préparée et reste actif lorsque vous changez de page. Le bouton
+**Réinitialiser** affiche à nouveau tous les produits.

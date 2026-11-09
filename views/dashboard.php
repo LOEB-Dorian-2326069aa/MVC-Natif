@@ -8,7 +8,7 @@
     <meta name="copyright" content="© 2026 M1 Web Application">
     <title>Tableau de bord | Portail MVC Natif</title>
     <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
-    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="assets/css/style.css?v=20261109">
 </head>
 <body>
     <header class="site-header" role="banner">
@@ -61,7 +61,7 @@
                     </div>
                 </div>
 
-                <div style="margin-top: 2rem;">
+                <div class="dashboard-actions">
                     <a href="index.php?action=users" class="btn btn-primary">Gérer les utilisateurs</a>
                     <a href="index.php?action=products" class="btn btn-primary">Gérer les produits</a>
                     <a href="index.php?action=logout" class="btn btn-danger">Se déconnecter</a>

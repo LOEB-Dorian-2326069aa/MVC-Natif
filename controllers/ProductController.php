@@ -19,12 +19,15 @@ class ProductController {
         $perPage = 15;
         $pageInput = filter_input(INPUT_GET, 'page', FILTER_VALIDATE_INT);
         $currentPage = is_int($pageInput) && $pageInput >= 1 ? $pageInput : 1;
-        $totalProducts = $this->productModel->countAll();
+        $typeInput = trim((string)($_GET['type'] ?? ''));
+        $selectedType = $typeInput === '' ? null : $typeInput;
+        $totalProducts = $this->productModel->countAll($selectedType);
         $totalPages = (int)ceil($totalProducts / $perPage);
         $totalPages = max(1, $totalPages);
         $currentPage = min($currentPage, $totalPages);
         $offset = ($currentPage - 1) * $perPage;
-        $products = $this->productModel->findAll($perPage, $offset);
+        $products = $this->productModel->findAll($perPage, $offset, $selectedType);
+        $productTypes = $this->productModel->findTypes();
         $success = $this->getFlashMessage('success');
         $error = $this->getFlashMessage('error');
         require __DIR__ . '/../views/products/index.php';

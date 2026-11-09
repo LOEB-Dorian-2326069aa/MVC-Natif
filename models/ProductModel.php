@@ -11,24 +11,52 @@ class ProductModel {
         $this->db = Database::getConnection();
     }
 
-    public function countAll(): int {
-        $stmt = $this->db->query("SELECT COUNT(id_p) FROM produit");
+    public function countAll(?string $type = null): int {
+        if ($type === null) {
+            $stmt = $this->db->query("SELECT COUNT(id_p) FROM produit");
+        } else {
+            $stmt = $this->db->prepare("SELECT COUNT(id_p) FROM produit WHERE type_p = :type");
+            $stmt->execute(['type' => $type]);
+        }
         return (int)$stmt->fetchColumn();
     }
 
     /** @return array<int, array<string, mixed>> */
-    public function findAll(int $limit, int $offset): array {
+    public function findAll(int $limit, int $offset, ?string $type = null): array {
+        $where = '';
+        if ($type !== null) {
+            $where = 'WHERE type_p = :type';
+        }
+
         $stmt = $this->db->prepare("
             SELECT id_p, type_p, designation_p, prix_ht, date_in, times_in, stock_p, ppromo,
                    image_url, image_blob IS NOT NULL AS has_image
             FROM produit
+            $where
             ORDER BY id_p DESC
             LIMIT :limit OFFSET :offset
         ");
+        if ($type !== null) {
+            $stmt->bindValue(':type', $type, PDO::PARAM_STR);
+        }
         $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
         $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
         $stmt->execute();
         return $stmt->fetchAll();
+    }
+
+    /** @return array<int, string> */
+    public function findTypes(): array {
+        $stmt = $this->db->query("
+            SELECT DISTINCT type_p
+            FROM produit
+            WHERE type_p <> ''
+            ORDER BY type_p ASC
+        ");
+        return array_map(
+            static fn (array $product): string => (string)$product['type_p'],
+            $stmt->fetchAll()
+        );
     }
 
     public function findById(int $productId): ?array {
